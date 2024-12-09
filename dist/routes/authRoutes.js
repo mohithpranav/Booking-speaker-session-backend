@@ -2,8 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authController_1 = require("../controllers/authController");
+const isSpeaker_1 = require("../middleware/isSpeaker");
+const speakerController_1 = require("../controllers/speakerController");
 const router = (0, express_1.Router)();
 router.post("/signup", authController_1.signup);
 router.post("/verify-otp", authController_1.verifyOtp);
 router.post("/login", authController_1.login);
+router.post("/speaker/profile", isSpeaker_1.isSpeaker, speakerController_1.setupSpeakerProfile);
 exports.default = router;

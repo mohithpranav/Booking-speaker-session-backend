@@ -109,6 +109,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ message: "Login successfull", token });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ message: "Something went wrong" });
     }
 });

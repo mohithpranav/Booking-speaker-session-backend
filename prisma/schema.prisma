@@ -8,13 +8,21 @@ datasource db {
 }
 
 model User {
-  id          Int     @default(autoincrement())  @id
-  firstName   String
-  lastName    String
-  email       String  @unique
-  password    String
-  userType    String
-  otp         String?
-  isVerified  Boolean @default(false)
+  id                Int     @default(autoincrement())  @id
+  firstName         String
+  lastName          String
+  email             String  @unique
+  password          String
+  userType          String
+  otp               String?
+  isVerified        Boolean @default(false)
+  speakerProfile   SpeakerProfile?   
 }
 
+model SpeakerProfile {
+  id               Int    @default(autoincrement())    @id
+  userId           Int    @unique
+  expertise        String
+  PricePerSession  Int
+  user             User  @relation(fields: [userId], references: [id])
+}
