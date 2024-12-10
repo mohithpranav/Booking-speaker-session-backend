@@ -12,14 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setupSpeakerProfile = void 0;
 const client_1 = require("@prisma/client");
 const client = new client_1.PrismaClient();
-/**
- * Speaker Profile Setup Controller
- */
 const setupSpeakerProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { expertise, PricePerSession } = req.body; // Ensure casing matches Prisma schema
+        const { expertise, PricePerSession } = req.body;
         const userId = req.body.userId; // Extracted user ID from middleware
-        // Find the speaker in the database
         const speaker = yield client.user.findUnique({
             where: { id: userId },
         });
@@ -28,12 +24,10 @@ const setupSpeakerProfile = (req, res) => __awaiter(void 0, void 0, void 0, func
                 message: "Access denied. Only speakers can perform this action",
             });
         }
-        // Check if the speaker already has a profile
         const existingProfile = yield client.speakerProfile.findUnique({
             where: { userId: userId },
         });
         if (existingProfile) {
-            // Update the existing profile
             yield client.speakerProfile.update({
                 where: { userId: userId },
                 data: {
@@ -46,7 +40,6 @@ const setupSpeakerProfile = (req, res) => __awaiter(void 0, void 0, void 0, func
                 .json({ message: "Speaker profile updated successfully" });
         }
         else {
-            // Create a new speaker profile
             yield client.speakerProfile.create({
                 data: {
                     userId,

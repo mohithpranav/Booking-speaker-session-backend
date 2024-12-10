@@ -3,26 +3,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isSpeaker = void 0;
+exports.isUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const isSpeaker = (req, res, next) => {
+const isUser = (req, res, next) => {
     var _a;
     try {
-        const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1]; // Get the token from Authorization header
+        const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1]; // Extract token from Authorization header
         if (!token) {
             return res.status(401).json({ message: "Unauthorized access" });
         }
+        // Verify the JWT token
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        if (decoded.userType !== "speaker") {
+        // Check if the user type is 'user'
+        if (decoded.userType !== "user") {
             return res
                 .status(403)
-                .json({ message: "Access denied. Only speakers are allowed" });
+                .json({ message: "Access denied. Only users are allowed" });
         }
-        req.body.userId = decoded.id; // Attach user ID to the request for use in the controller
+        // Attach the user ID to the request object
+        req.body.userId = decoded.id;
         next();
     }
     catch (error) {
         res.status(401).json({ message: "Unauthorized access" });
     }
 };
-exports.isSpeaker = isSpeaker;
+exports.isUser = isUser;

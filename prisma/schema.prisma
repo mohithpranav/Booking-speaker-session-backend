@@ -13,16 +13,42 @@ model User {
   lastName          String
   email             String  @unique
   password          String
-  userType          String
+  userType          String  // user or speaker
   otp               String?
   isVerified        Boolean @default(false)
-  speakerProfile   SpeakerProfile?   
+  speakerProfile    SpeakerProfile?   
+  bookings          Booking[]
 }
 
 model SpeakerProfile {
-  id               Int    @default(autoincrement())    @id
-  userId           Int    @unique
-  expertise        String
-  PricePerSession  Int
-  user             User  @relation(fields: [userId], references: [id])
+  id                   Int    @default(autoincrement())    @id
+  userId               Int    @unique
+  expertise            String
+  PricePerSession      Int
+  user                 User  @relation(fields: [userId], references: [id])
+  bookings             Booking[]
+  speakerAvailability  SpeakerAvailability[]
 }
+
+model Booking {
+  id               Int     @default(autoincrement())  @id
+  userId           Int
+  speakerId        Int
+  date             DateTime
+  timeSlot         String
+  slotsBooked      Int     @default(1)
+  user             User    @relation(fields: [userId], references: [id])
+  speaker          SpeakerProfile @relation(fields: [speakerId], references: [id])
+}
+
+model SpeakerAvailability {
+  id               Int     @default(autoincrement())  @id
+  speakerId        Int
+  date             DateTime
+  timeSlot         String
+  availableSlots   Int     @default(1)
+  isBooked         Boolean @default(false)
+  speaker          SpeakerProfile @relation(fields: [speakerId], references: [id])
+  @@unique([speakerId, date, timeSlot]) // Ensure one slot per speaker per time
+}
+
